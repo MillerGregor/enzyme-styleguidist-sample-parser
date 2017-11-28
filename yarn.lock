@@ -2963,10 +2963,6 @@ sshpk@^1.7.0:
     jsbn "~0.1.0"
     tweetnacl "~0.14.0"
 
-string-builder@^0.1.4:
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/string-builder/-/string-builder-0.1.4.tgz#edf66e7606f89585b4810f469f72d010677680b2"
-
 string-length@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/string-length/-/string-length-2.0.0.tgz#d40dbb686a3ace960c1cffca562bf2c45f8363ed"
