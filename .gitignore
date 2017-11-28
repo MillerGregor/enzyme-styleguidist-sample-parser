@@ -1,0 +1,12 @@
+node_modules
+.DS_Store
+*.log
+site
+coverage
+jsconfig.json
+.vscode/
+
+web-support/styleguide/public
+web-support/styleguide/build
+web-support/styleguide/scripts
+web-support/styleguide/examples

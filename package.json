@@ -1,0 +1,35 @@
+{
+  "name": "enzyme-styleguidist-sample-parser",
+  "version": "0.1.0",
+  "description":
+    "parser to generate jest/enzyme tests and styleguidist examples from a common source",
+  "main": "index.js",
+  "repository":
+    "https://github.com/Gregor1971/enzyme-styleguidist-sample-parser",
+  "author": "Greg Miller",
+  "license": "MIT",
+  "dependencies": {
+    "enzyme": "^3.2.0",
+    "enzyme-to-json": "^3.2.2",
+    "fs-extra": "^4.0.2",
+    "jest": "^21.2.1",
+    "lodash.capitalize": "^4.2.1",
+    "lodash.clonedeep": "^4.5.0",
+    "lodash.foreach": "^4.5.0",
+    "lodash.merge": "^4.6.0",
+    "log": "^1.4.0",
+    "react-element-to-jsx-string": "^13.1.0",
+    "sinon": "^4.1.2",
+    "string-builder": "^0.1.4"
+  },
+  "devDependencies": {
+    "eslint-plugin-flowtype": "^2.39.1",
+    "flow-bin": "^0.59.0",
+    "prettier-eslint": "^8.2.2"
+  },
+  "peerDependencies": {
+    "jest": ">19.0.0",
+    "react": ">15.0.0",
+    "react-native": ">0.41.2"
+  }
+}
