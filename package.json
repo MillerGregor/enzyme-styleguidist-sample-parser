@@ -1,14 +1,12 @@
 {
   "name": "enzyme-styleguidist-sample-parser",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "parser to generate jest/enzyme tests and styleguidist examples from a common source",
   "main": "sampleParser.js",
   "repository": "https://github.com/Gregor1971/enzyme-styleguidist-sample-parser",
   "author": "Greg Miller",
   "license": "MIT",
   "dependencies": {
-    "enzyme": "^3.2.0",
-    "enzyme-to-json": "^3.2.2",
     "fs-extra": "^4.0.2",
     "jest": "^21.2.1",
     "lodash.capitalize": "^4.2.1",
@@ -25,6 +23,8 @@
     "prettier-eslint": "^8.2.2"
   },
   "peerDependencies": {
+    "enzyme": ">=2.9.1",
+    "enzyme-to-json": ">=1.5.0",
     "jest": ">19.0.0",
     "react": ">15.0.0",
     "react-native": ">=0.41.2"
