@@ -1,6 +1,6 @@
 {
   "name": "enzyme-styleguidist-sample-parser",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "description": "parser to generate jest/enzyme tests and styleguidist examples from a common source",
   "main": "sampleParser.js",
   "repository": "https://github.com/Gregor1971/enzyme-styleguidist-sample-parser",

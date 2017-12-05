@@ -58,6 +58,7 @@ const _defaultBuildJsx = attr => {
 };
 
 const _defaultJsxToString = jsx => {
+  // $FlowExpectedError
   return jsxToString(jsx, {
     showFunctions: true,
     showDefaultProps: false
@@ -65,11 +66,9 @@ const _defaultJsxToString = jsx => {
 };
 
 const _processAttribute = (attr, opts) => {
-  let exampleWritten = false;
-  if (opts.enzyme && opts.enzyme.run) {
-    // let buildJsx = loGet(attr, "enzyme.buildJsx");
-    // if (!buildJsx) buildJsx = _defaultBuildJsx;
-    const jsx = _defaultBuildJsx(attr);
+  if (loGet(opts, "enzyme.run")) {
+    let buildJsx = loGet(attr, "enzyme.buildJsx", _defaultBuildJsx);
+    const jsx = buildJsx(attr);
     log.debug({ attr });
     each(loGet(attr, "enzyme.tests", {}), (depth, depthName) => {
       log.debug({ depthName, depth });
@@ -81,56 +80,51 @@ const _processAttribute = (attr, opts) => {
           "enzyme.createWrapper",
           _defaultCreateWrapper
         )(depthName, jsx);
-        jestTest(wrapper, title, attr.attrName);
+        jestTest(wrapper, title, attr.name);
       });
     });
   }
-  if (opts.styleguidist && opts.styleguidist.build) {
+  if (loGet(opts, "styleguidist.build")) {
     attr.stringBuilder.appendLine("\n#### " + attr.displayName);
     attr.stringBuilder.append("\n```js\n");
-    if (opts.styleguidist && opts.styleguidist.script)
+    if (loGet(opts, "styleguidist.script"))
       attr.stringBuilder.appendLine(opts.styleguidist.script);
-    let jsx = "";
-    if (!loGet(attr, "styleguidist.getJsxString")) {
+    let jsx;
+    let jsxString;
+    if (loGet(attr, "styleguidist.script"))
+      attr.stringBuilder.appendLine(attr.styleguidist.script);
+    if (loGet(attr, "styleguidist.getJsxString")) {
+      jsxString = loGet(attr, "styleguidist.getJsxString")(attr); // this get attr
+    } else {
       jsx = loGet(attr, "styleguidist.buildJsx", _defaultBuildJsx)(attr);
+      jsxString = _defaultJsxToString(jsx); // this gets jsx
     }
-    const jsxString = loGet(
-      attr,
-      "styleguidist.getJsxString",
-      _defaultJsxToString
-    )(jsx);
     attr.stringBuilder.appendLine(jsxString);
     attr.stringBuilder.appendLine("\n```\n");
-    exampleWritten = true;
-    test(attr.title + " example file written", () => {
-      expect(exampleWritten).toBeTruthy();
-    });
   }
 };
 
 const _processComponent = (compSect, opts) => {
-  log.debug({ compSect });
+  log.info({ compSect });
   each(compSect.samples, (attrDefs, attrTypeName) => {
-    log.debug({ attrTypeName });
+    log.info({ attrTypeName });
     let descTitle = compSect.title.concat(" ", capitalize(attrTypeName));
-    if (opts.styleguidist && opts.styleguidist.build) {
+    if (loGet(opts, "styleguidist.build")) {
       descTitle = descTitle.concat(" Styleguide Examples");
       compSect.stringBuilder.appendLine("\n### " + attrTypeName + "\n");
     }
     describe(descTitle, () => {
-      each(attrDefs, (attr, attrName) => {
+      each(attrDefs, (attr, name) => {
         attr.attrType = attrTypeName;
-        attr.attrName = attrName;
-        attr.displayName = attrName.concat(
-          attrTypeName === METHODS ? "()" : ""
-        );
+        attr.name = name;
+        attr.displayName = name.concat(attrTypeName === METHODS ? "()" : "");
         attr.title = compSect.title.concat(
           ` [ ${attrTypeName.slice(0, -1)}:`,
           ` ${attr.displayName}`,
           " ]"
         );
 
-        if (opts.styleguidist && opts.styleguidist.build) {
+        if (loGet(opts, "styleguidist.build")) {
           attr.stringBuilder = compSect.stringBuilder;
         }
 
@@ -141,10 +135,11 @@ const _processComponent = (compSect, opts) => {
 };
 
 const _processSection = (section, opts) => {
-  log.debug({ section });
+  let exampleWritten = false;
+  log.info({ section });
   each(section.sectionComponents, (compSect, name) => {
     compSect.title = section.title.concat(": ", name, ":");
-    if (opts.styleguidist && opts.styleguidist.build) {
+    if (loGet(opts, "styleguidist.build")) {
       compSect.exampleFileName = path
         .join(opts.styleguidist.examplesDir, name)
         .concat(".md");
@@ -152,8 +147,13 @@ const _processSection = (section, opts) => {
       compSect.stringBuilder.appendLine(HEADER);
     }
     _processComponent(compSect, opts);
-    if (opts.styleguidist && opts.styleguidist.build)
+    if (loGet(opts, "styleguidist.build")) {
       fse.outputFileSync(compSect.exampleFileName, compSect.stringBuilder);
+      exampleWritten = true;
+      test(compSect.title + " example file written", () => {
+        expect(exampleWritten).toBeTruthy();
+      });
+    }
   });
 };
 
@@ -162,17 +162,19 @@ export default function parseSamples(sections: Object, options: Object) {
   else log.setLevel(`WARN`);
 
   log.debug({ options });
-  log.debug({ sections });
+  log.info({ sections });
   each(sections, (section, sectionKey) => {
+    section.title = sectionKey;
+
     // guide first to avoid the mocks
-    if (options.styleguidist && options.styleguidist.build) {
+    if (loGet(options, "styleguidist.build")) {
       const guideOpts = cloneDeep(options);
       delete guideOpts.enzyme;
       log.info(`Styleguide: processing Section: ${sectionKey}`);
       _processSection(section, guideOpts);
     }
 
-    if (options.enzyme && options.enzyme.run) {
+    if (loGet(options, "enzyme.run")) {
       const testOpts = cloneDeep(options);
       delete testOpts.styleguidist;
       if (options.mocks) options.mocks();
