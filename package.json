@@ -1,6 +1,6 @@
 {
   "name": "enzyme-styleguidist-sample-parser",
-  "version": "0.1.11",
+  "version": "0.1.12",
   "description": "parser to generate jest/enzyme tests and styleguidist examples from a common source",
   "main": "sampleParser.js",
   "repository": "https://github.com/Gregor1971/enzyme-styleguidist-sample-parser",
@@ -14,6 +14,7 @@
     "lodash.get": "^4.4.2",
     "lodash.merge": "^4.6.0",
     "log": "^1.4.0",
+    "prop-types": "^15.6.0",
     "react-element-to-jsx-string": "^13.1.0",
     "sinon": "^4.1.2",
     "string-builder": "^0.1.4"
